@@ -1,5 +1,6 @@
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
@@ -32,20 +33,10 @@ public class Runner {
         }
 
         //get save folder first
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY);
-        chooser.setDialogTitle("Select directory for saving booth");
-        int returnVal = chooser.showOpenDialog(null);
-
-        String filepath = "";
-        if(returnVal == JFileChooser.APPROVE_OPTION) {
-            filepath = chooser.getSelectedFile().getCanonicalPath();
-        } else {
-
-            JOptionPane.showMessageDialog(null, "No directory selected.\nShutting down application.");
-
+        String filepath = showFileDialog();
+        if (filepath == null) {
+            System.exit(0);
         }
-
 
         Interface frame = new Interface(filepath);
         frame.setBounds(new Rectangle(new Dimension(400,500)));
@@ -54,6 +45,29 @@ public class Runner {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
 
+    }
+
+    private static String showFileDialog() throws IOException {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY);
+        chooser.setDialogTitle("Select directory for saving booth");
+        int returnVal = chooser.showOpenDialog(null);
+
+        String filepath = "";
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+            filepath = chooser.getSelectedFile().getCanonicalPath();
+            File file = new File(filepath);
+            if (!file.exists()) {
+                JOptionPane.showMessageDialog(null, "Must create folder first!");
+                return showFileDialog();
+            }
+        } else {
+
+            JOptionPane.showMessageDialog(null, "No directory selected.\nShutting down application.");
+            return null;
+        }
+
+        return filepath;
     }
 
 }

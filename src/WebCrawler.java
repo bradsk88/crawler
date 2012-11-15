@@ -1,6 +1,7 @@
 import java.awt.Desktop;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -164,6 +165,14 @@ public class WebCrawler {
 
             printErrMsg(interf, "URL was invalid.\n");
 
+        }catch(FileNotFoundException ef) {
+            ef.printStackTrace();
+            printErrMsg(interf, "Could not start.  Selected folder must exist!\n");
+            interf.enableCrawlBut();
+        }catch(IOException ioe) {
+            ioe.printStackTrace();
+            printErrMsg(interf, "The dailybooth servers failed to serve this file.  You will have to go to dailybooth and manually find the url of the next booth.");
+            interf.enableCrawlBut();
         }catch(Exception e) {
 
             e.printStackTrace();
